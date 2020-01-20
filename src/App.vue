@@ -1,13 +1,17 @@
 <template>
   <div id="app">
+    <Nav></Nav>
     <router-view/>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'App'
-}
+  import Nav from './pages/nav/nav'
+  export default {
+    components:{
+      Nav
+    }
+  }
 </script>
 
 <style>
@@ -18,5 +22,5 @@ export default {
     -moz-osx-font-smoothing: grayscale;
   }
 
-  
+
 </style>

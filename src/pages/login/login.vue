@@ -10,7 +10,7 @@
           <h2>用户登录</h2>
           <input type="text" placeholder="邮箱">
           <input type="password" placeholder="密码">
-          <p>忘记密码?</p>
+          <p class="find-psw" @click="mode='findPsw'">忘记密码?</p>
           <div class="btn sign-in">登录</div>
         </div>
       </transition>
@@ -26,12 +26,40 @@
           <input type="password" placeholder="再次输入密码">
           <div class="rand">
             <input type="text" placeholder="验证码">
-            <div class="get-rand">获取验证码</div>
+            <div
+              class="get-rand"
+              :class="time===0 ? 'ready' : 'wait'"
+              @click="getRand"
+            >
+              {{randBtn}}
+            </div>
           </div>
           <div class="btn sign-up">注册</div>
         </div>
       </transition>
       <!-- 找回密码 -->
+      <transition name="slide-right">
+        <div
+          v-if="mode==='findPsw'"
+          class="content right"
+        >
+          <h2>找回密码</h2>
+          <input type="text" placeholder="邮箱">
+          <input type="password" placeholder="密码">
+          <input type="password" placeholder="再次输入密码">
+          <div class="rand">
+            <input type="text" placeholder="验证码">
+            <div
+              class="get-rand"
+              :class="time===0 ? 'ready' : 'wait'"
+              @click="getRand"
+            >
+              {{randBtn}}
+            </div>
+          </div>
+          <div class="btn sign-up">修改密码</div>
+        </div>
+      </transition>
 
       <!-- 覆盖层 -->
       <div
@@ -63,12 +91,40 @@
 </template>
 
 <script>
+  var Randinterval
   export default{
     data(){
       return{
-        mode : 'login'
+        mode : 'login',
+
+        time : 0,
       }
-    }
+    },
+    methods:{
+      getRand(){
+        if(this.time === 0){
+          //发送验证码
+          this.time = 10
+          Randinterval = setInterval(() => {
+            this.time--
+          },1000)
+        }
+      }
+    },
+    computed:{
+      randBtn(){
+        if(this.time === 0){
+          clearInterval(Randinterval)
+          return '获取验证码'
+        }
+        else{
+          if(this.time < 10)
+            return `0${this.time}s重新获取`
+          else
+            return `${this.time}s重新获取`
+        }
+      }
+    },
   }
 </script>
 
@@ -82,9 +138,10 @@
   .login .body{
     position: absolute;
     top: 25%;
-    margin: 0 2.5%;
+    margin: 0 auto;
     height: 350px;
     width: 95%;
+    max-width: 900px;
     background-color: #FFFFFF;
     border-radius: 10px;
     box-shadow: 10px 10px 14px rgba(0, 0, 0, 0.15), 0 0 6px rgba(0, 0, 0, 0.1);
@@ -101,7 +158,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: left 0.7s ease-in-out;
   }
   .login .body .content h2{
     font-size: 20px;
@@ -113,10 +169,52 @@
     width: 90%;
     margin: 10px 5%;
   }
+  .login .body .content .find-psw{
+    cursor: pointer;
+  }
+  .login .body .content .find-psw:hover{
+    color: #6830D5;
+  }
   .login .body .content .btn{
     margin-top: 10px;
     width: 30%;
     text-align: center;
+  }
+
+  /* 验证码 */
+  .login .body .content .rand{
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .login .body .content .rand input{
+    flex: 1;
+    margin-right: 0;
+  }
+  .login .body .content .rand .get-rand{
+    margin-right: 5%;
+    margin-left: 15px;
+    width: 120px;
+    height: 35px;
+    padding: 7px 0;
+    border: 1px solid #DCDFE6;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .login .body .content .rand .ready:hover{
+    border: none;
+    color: #F4F4F4;
+    background-color: #6830d5;
+    box-shadow: 0 0 5px rgba(64,48,213,0.6),0 0 5px rgba(64,48,213,0.5);
+  }
+  .login .body .content .rand .wait{
+    color: #505050;
+    background-color: rgba(197,197,197,0.5);
+    cursor: not-allowed;
   }
 
   .login .body .overarea{
