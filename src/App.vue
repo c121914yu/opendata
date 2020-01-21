@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <Nav></Nav>
-    <router-view/>
+    <div class="view">
+      <router-view/>
+    </div>
   </div>
 </template>
 
@@ -12,6 +14,7 @@
       Nav
     }
   }
+global.Router = (that,name) => that.$router.push({name:name})
 </script>
 
 <style>
@@ -20,7 +23,12 @@
   #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    position: relative;
   }
-
+  .view{
+    background-color: #f4f4f4;
+    width: 100%;
+    height: 100vh;
+  }
 
 </style>

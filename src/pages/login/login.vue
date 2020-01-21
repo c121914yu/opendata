@@ -137,7 +137,7 @@
 
   .login .body{
     position: absolute;
-    top: 25%;
+    top: 10%;
     margin: 0 auto;
     height: 350px;
     width: 95%;
