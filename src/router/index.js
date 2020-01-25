@@ -4,6 +4,8 @@ Vue.use(Router)
 
 import home from '../pages/home/home.vue'
 
+import sort from '../pages/sort/sort.vue'
+
 import guide from '../pages/explain/operatind_guide.vue'
 import about from '../pages/explain/about.vue'
 
@@ -13,6 +15,8 @@ import userInfo from '../pages/userInfo/userInfo.vue'
 export default new Router({
   routes: [
     {path:'/opendata',name:'home',component:home},
+    
+    {path:'/opendata/sort',name:'sort',component:sort},
     
     {path:'/opendata/guide',name:'guide',component:guide},
     {path:'/opendata/about',name:'about',component:about},

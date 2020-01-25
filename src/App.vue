@@ -14,7 +14,12 @@
       Nav
     }
   }
-global.Router = (that,name) => that.$router.push({name:name})
+global.Router = (that,name,query='') => {
+  that.$router.push({
+    name:name,
+    query:query
+  })
+}
 global.Message = (that,type,text) => {
   that.$message({
     message: text,
@@ -33,7 +38,7 @@ global.waiting = (that,text) => {
     background: 'rgba(244,244,244,0.7)',
     customClass : 'waiting'
   });
-   
+
 }
 </script>
 
@@ -46,7 +51,6 @@ global.waiting = (that,text) => {
     position: relative;
   }
   .view{
-    background-color: #f4f4f4;
     width: 100%;
     height: 100vh;
   }

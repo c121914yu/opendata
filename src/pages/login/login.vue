@@ -25,11 +25,11 @@
           <input type="password" placeholder="密码" v-model="registerInfo.password">
           <input type="password" placeholder="再次输入密码" v-model="registerInfo.surePsw">
           <div class="rand">
-            <input type="text" placeholder="验证码" maxlength="6" v-model="registerInfo.rand">
+            <input type="number" placeholder="验证码" maxlength="6" v-model="registerInfo.rand">
             <div
               class="get-rand"
               :class="time===0 ? 'ready' : 'wait'"
-              @click="getRand"
+              @click="getRand(registerInfo,'register')"
             >
               {{randBtn}}
             </div>
@@ -44,20 +44,20 @@
           class="content right"
         >
           <h2>找回密码</h2>
-          <input type="text" placeholder="邮箱">
-          <input type="password" placeholder="密码">
-          <input type="password" placeholder="再次输入密码">
+          <input type="text" placeholder="邮箱" v-model="findPswInfo.email">
+          <input type="password" placeholder="密码" v-model="findPswInfo.password">
+          <input type="password" placeholder="再次输入密码" v-model="findPswInfo.surePsw">
           <div class="rand">
-            <input type="text" placeholder="验证码">
+            <input type="number" placeholder="验证码" v-model="findPswInfo.rand">
             <div
               class="get-rand"
               :class="time===0 ? 'ready' : 'wait'"
-              @click="getRand"
+              @click="getRand(findPswInfo,'findPsw')"
             >
               {{randBtn}}
             </div>
           </div>
-          <div class="btn sign-up">修改密码</div>
+          <div class="btn sign-up" @click="findPsw">修改密码</div>
         </div>
       </transition>
 
@@ -109,6 +109,13 @@
           rand : '',
           sureRand : ''
         },
+        findPswInfo : {
+          email : '',
+          password : '',
+          surePsw : '',
+          rand : '',
+          sureRand : ''
+        }
       }
     },
     methods:{
@@ -129,7 +136,7 @@
               global.Message(this,'error',res.data.text)
             else{
               localStorage.setItem("UserInfo",JSON.stringify(res.data.userInfo))
-              global.Router(this,'home')
+              global.Router(this,'home',{refresh:true})
               global.Message(this,'success','登录成功')
             }
             waiting.close()
@@ -141,21 +148,25 @@
           })
         }
       },
-      getRand(){//发送验证码
+      getRand(data,type){//发送验证码
         if(this.time === 0){
           let reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
-          let data = this.registerInfo
           if(data.email === '')
             global.Message(this,'error','邮箱不能为空')
           else if(!reg.test(data.email))
             global.Message(this,'error','邮箱格式错误')
           else{
+            const waiting = global.waiting(this,'验证码发送中...')
             this.$axios.post('/opendata/user/sendRand',{
-              email : data.email
+              email : data.email,
+              type
             })
             .then(res => {
               if(res.data.status === 200){
-                this.registerInfo.sureRand = res.data.text
+                if(type === 'register')
+                  this.registerInfo.sureRand = res.data.text
+                else
+                  this.findPswInfo.sureRand = res.data.text
                 this.time = 10
                 Randinterval = setInterval(() => {
                   this.time--
@@ -163,17 +174,19 @@
               }
               else
                 global.Message(this,'error','网络错误')
+              waiting.close()
             })
             .catch(err =>{
               console.log(err)
+              waiting.close()
               global.Message(this,'error','网络错误')
             })
           }
         }
       },
       sign_up(){//注册
-        let reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
         let data = this.registerInfo
+        let reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
         if(data.email === '')
           global.Message(this,'error','邮箱不能为空')
         else if(!reg.test(data.email))
@@ -198,7 +211,7 @@
                 id : res.data.text
               }
               localStorage.setItem("UserInfo",JSON.stringify(userInfo))
-              global.Router(this,'home')
+              global.Router(this,'home',{refresh:true})
               global.Message(this,'success','注册成功')
             }
             else
@@ -211,7 +224,51 @@
             global.Message(this,'error','网络错误')
           })
         }
-      }
+      },
+      findPsw(){//找回密码
+        let data = this.findPswInfo
+        let reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+        if(data.email === '')
+          global.Message(this,'error','邮箱不能为空')
+        else if(!reg.test(data.email))
+          global.Message(this,'error','邮箱格式错误')
+        else if(data.password === '')
+          global.Message(this,'error','密码不能为空')
+        else if(data.surePsw != data.password)
+          global.Message(this,'error','两次密码不一致')
+        else if(data.rand != data.sureRand)
+          global.Message(this,'error','验证码错误')
+        else{
+          const waiting = global.waiting(this,'修改密码中...')
+          data = {
+            email : data.email,
+            password : data.password
+          }
+          this.$axios.post('/opendata/user/findPsw',data)
+          .then(res => {
+            if(res.data.status === 200){
+              global.Message(this,'success','密码已修改')
+              this.findPswInfo = {
+                email : '',
+                password : '',
+                surePsw : '',
+                rand : '',
+                sureRand : ''
+              }
+              this.loginInfo.email = data.email
+              this.mode = 'login'
+            }
+            else
+              global.Message(this,'error',res.data.text)
+            waiting.close()
+          })
+          .catch(err =>{
+            console.log(err)
+            waiting.close()
+            global.Message(this,'error','网络错误')
+          })
+        }
+      },
     },
     computed:{
       randBtn(){
