@@ -15,6 +15,26 @@
     }
   }
 global.Router = (that,name) => that.$router.push({name:name})
+global.Message = (that,type,text) => {
+  that.$message({
+    message: text,
+    type: type,
+    duration : 2000,
+    center: true,
+    offset : 60
+  });
+}
+
+global.waiting = (that,text) => {
+  return that.$loading({
+    lock: true,
+    text: text,
+    spinner: 'el-icon-loading',
+    background: 'rgba(244,244,244,0.7)',
+    customClass : 'waiting'
+  });
+   
+}
 </script>
 
 <style>

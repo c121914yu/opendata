@@ -10,7 +10,16 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/opendata':{
+        target : 'http://localhost:4000/',
+        ws : true,
+        changOrigin : true,
+        pathRewrite : {
+          '^/opendata' : ''
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
