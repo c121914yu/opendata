@@ -135,7 +135,10 @@
             if(res.data.status != 200)
               global.Message(this,'error',res.data.text)
             else{
-              localStorage.setItem("UserInfo",JSON.stringify(res.data.userInfo))
+              localStorage.setItem("UserInfo",JSON.stringify({
+                ...res.data.userInfo,
+                info : {name:'游客'}
+              }))
               global.Router(this,'home',{refresh:true})
               global.Message(this,'success','登录成功')
             }
@@ -208,7 +211,8 @@
             if(res.data.status === 200){
               const userInfo = {
                 email : data.email,
-                id : res.data.text
+                id : res.data.text,
+                info : {name:'游客'}
               }
               localStorage.setItem("UserInfo",JSON.stringify(userInfo))
               global.Router(this,'home',{refresh:true})
