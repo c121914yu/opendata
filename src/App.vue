@@ -35,7 +35,7 @@ global.waiting = (that,text) => {
     lock: true,
     text: text,
     spinner: 'el-icon-loading',
-    background: 'rgba(244,244,244,0.7)',
+    background: 'rgba(116,116,116,0.7)',
     customClass : 'waiting'
   });
 

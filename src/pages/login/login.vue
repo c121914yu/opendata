@@ -135,10 +135,9 @@
             if(res.data.status != 200)
               global.Message(this,'error',res.data.text)
             else{
-              localStorage.setItem("UserInfo",JSON.stringify({
-                ...res.data.userInfo,
-                info : {name:'游客'}
-              }))
+              let userInfo = res.data.userInfo
+              userInfo.info = JSON.parse(userInfo.info)
+              localStorage.setItem("UserInfo",JSON.stringify(userInfo))
               global.Router(this,'home',{refresh:true})
               global.Message(this,'success','登录成功')
             }
@@ -204,17 +203,22 @@
           const waiting = global.waiting(this,'注册中...')
           data = {
             email : data.email,
-            password : data.password
+            password : data.password,
+            info : JSON.stringify({
+              name : '游客',
+              identity : '游客',
+              workPlace : '',
+              profession : '',
+              reserarch_direction : ''
+            })
           }
           this.$axios.post('/opendata/user/register',data)
           .then(res => {
             if(res.data.status === 200){
-              const userInfo = {
-                email : data.email,
-                id : res.data.text,
-                info : {name:'游客'}
-              }
-              localStorage.setItem("UserInfo",JSON.stringify(userInfo))
+              data.id = res.data.text
+              delete data.password
+              data.info = JSON.parse(data.info)
+              localStorage.setItem("UserInfo",JSON.stringify(data))
               global.Router(this,'home',{refresh:true})
               global.Message(this,'success','注册成功')
             }
