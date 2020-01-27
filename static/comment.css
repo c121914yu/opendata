@@ -6,6 +6,7 @@
   line-height: 1.5;
   letter-spacing: 1px;
   box-sizing: border-box;
+  color: #606266;
 }
 
 input{
@@ -28,13 +29,18 @@ textarea{
   border-radius: 4px;
   padding: 7px 10px;
   resize: none;
+  outline: none;
 }
 input::-webkit-input-placeholder,textarea::-webkit-input-placeholder{
   font-size: 13px;
   color: #909399;
 }
 textarea:focus,input:focus{
-  border-color: #6830d5;
+  border-color: rgba(104,48,213,0.8);
+  box-shadow: 0 0 7px rgba(104,48,213,0.5);
+}
+.el-select__input:focus{
+  box-shadow: none;
 }
 
 /* 标题文字 */
@@ -75,6 +81,12 @@ h3{
 .btn:hover{
   background-color: #6830d5;
   box-shadow: 0 0 5px rgba(64,48,213,0.6),0 0 5px rgba(64,48,213,0.5);
+}
+
+/* 备注信息 */
+.remak{
+  color: #909399;
+  font-size: 12px;
 }
 
 /* 弹窗 */

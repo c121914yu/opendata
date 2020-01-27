@@ -52,7 +52,7 @@ global.waiting = (that,text) => {
   }
   .view{
     width: 100%;
-    height: 100vh;
+    min-height: calc(100vh - 60px);
   }
 
 </style>

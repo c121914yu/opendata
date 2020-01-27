@@ -16,6 +16,9 @@ import myInfo from '../pages/my/myInfo.vue'
 import myInform from '../pages/my/myInform.vue'
 import myData from '../pages/my/myData.vue'
 
+import upload from '../pages/data/upload.vue'
+import newSpace from '../pages/data/newSpace.vue'
+
 export default new Router({
   routes: [
     {path:'/opendata',name:'home',component:home},
@@ -30,6 +33,11 @@ export default new Router({
       {path:'myInfo',name:'myInfo',component:myInfo},
       {path:'myInform',name:'myInform',component:myInform},
       {path:'myData',name:'myData',component:myData},
+    ]},
+
+    {path:'/opendata/data',component:my,children:[
+      {path:'upload',name:'upload',component:upload},
+      {path:'newSpace',name:'newSpace',component:newSpace},
     ]},
 
     {path: '/',redirect:'/opendata'},//错误地址重新定向
